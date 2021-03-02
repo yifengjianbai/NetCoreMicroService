@@ -13,6 +13,9 @@ using Microsoft.Extensions.Logging;
 using Ocelot.DependencyInjection;
 using Ocelot.Middleware;
 using Ocelot.Provider.Consul;
+using Ocelot.Cache.CacheManager;
+using Ocelot.Cache;
+using GateWay;
 
 namespace GetWay
 {
@@ -21,6 +24,7 @@ namespace GetWay
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+            RedisHelper.SetConnection(configuration["DbConnection:Redis"]);
         }
 
         public IConfiguration Configuration { get; }
@@ -31,14 +35,20 @@ namespace GetWay
             //services.AddControllers();
             services
                 .AddOcelot()
-                .AddConsul();
-                //.AddConfigStoredInConsul();
+                .AddConsul()//使用Consul
+                .AddCacheManager(x =>//使用缓存
+                {
+                    x.WithDictionaryHandle();
+                });
+
+            //使用自定义缓存，覆盖以上WithDictionaryHandle
+            services.AddSingleton<IOcelotCache<CachedResponse>, OcelotCacheExtension>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseOcelot();
+            app.UseOcelot();//添加ocelot中间件
             //if (env.IsDevelopment())
             //{
             //    app.UseDeveloperExceptionPage();

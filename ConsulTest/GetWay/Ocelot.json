@@ -5,29 +5,35 @@
       "DownstreamScheme": "http",
       "UpstreamPathTemplate": "/T/{postId}",
       "UpstreamHttpMethod": [ "Get", "Post" ],
-      "UseServiceDiscovery": true,
-      "ServiceName": "TestService",
-      //"DownstreamHostAndPorts": [
-      //  {
-      //    "Host": "localhost",
-      //    "Port": 8020
-      //  },
-      //  {
-      //    "Host": "localhost",
-      //    "Port": 8021
-      //  }
-      //],
+      //"UseServiceDiscovery": true,
+      "ServiceName": "TestService", //对应consul中的服务名称
       "LoadBalancerOptions": {
-        "Type": "RoundRobin"
+        "Type": "RoundRobin" //轮询
+      },
+      "RateLimitOptions": { //限流
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 5
+      },
+      "FileCacheOptions": {   //使用缓存
+        "TtlSeconds": 1,
+        "Region": "somename"
       }
     }
   ],
   "GlobalConfiguration": {
     "BaseUrl": "https://localhost:5000",
-    "ServiceDiscoveryProvider": {
+    "ServiceDiscoveryProvider": { //consul访问地址
       "Host": "localhost",
       "Port": 8500,
       "Type": "Consul"
+    },
+    "RateLimitOptions": {
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Customize Tips!",//触发限流时返回的提示
+      "HttpStatusCode": 999//触发限流时返回的Code
     }
     //"ServiceDiscoveryProvider": {
     //  "Host": "localhost",

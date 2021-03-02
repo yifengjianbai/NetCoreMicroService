@@ -4,6 +4,7 @@ namespace ConsulService
 {
     public class WeatherForecast
     {
+        public string Address { get; set; }
         public DateTime Date { get; set; }
 
         public int TemperatureC { get; set; }
