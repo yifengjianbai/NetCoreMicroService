@@ -16,6 +16,7 @@ using Ocelot.Provider.Consul;
 using Ocelot.Cache.CacheManager;
 using Ocelot.Cache;
 using GateWay;
+using Ocelot.Provider.Polly;
 
 namespace GetWay
 {
@@ -32,6 +33,16 @@ namespace GetWay
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //验证
+            var authenticationProviderKey = "TestKey";
+            services.AddAuthentication()
+                .AddJwtBearer(authenticationProviderKey, x =>
+                {
+                    x.Authority = "test";
+                    x.Audience = "test";
+                    x.RequireHttpsMetadata = false;
+                });
+
             //services.AddControllers();
             services
                 .AddOcelot()
@@ -39,7 +50,8 @@ namespace GetWay
                 .AddCacheManager(x =>//使用缓存
                 {
                     x.WithDictionaryHandle();
-                });
+                })
+                .AddPolly();//polly服务治理，熔断、降级、重试等等
 
             //使用自定义缓存，覆盖以上WithDictionaryHandle
             services.AddSingleton<IOcelotCache<CachedResponse>, OcelotCacheExtension>();
