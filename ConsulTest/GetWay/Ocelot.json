@@ -6,20 +6,30 @@
       "UpstreamPathTemplate": "/T/{postId}",
       "UpstreamHttpMethod": [ "Get", "Post" ],
       //"UseServiceDiscovery": true,
+      "RouteIsCaseSensitive": false,
       "ServiceName": "TestService", //对应consul中的服务名称
       "LoadBalancerOptions": {
         "Type": "RoundRobin" //轮询
       },
-      "RateLimitOptions": { //限流
+      "RateLimitOptions": { //限流配置
         "ClientWhitelist": [],
         "EnableRateLimiting": true,
         "Period": "1s",
         "PeriodTimespan": 1,
         "Limit": 5
       },
-      "FileCacheOptions": {   //使用缓存
+      "FileCacheOptions": { //缓存配置
         "TtlSeconds": 1,
         "Region": "somename"
+      },
+      "AuthenticationOptions": { //验证
+        "AuthenticationProviderKey": "TestKey",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {  //服务治理配置
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 1000,
+        "TimeoutValue": 5000
       }
     }
   ],

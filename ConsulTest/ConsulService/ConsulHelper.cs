@@ -32,7 +32,7 @@ namespace ConsulService
                     Interval = TimeSpan.FromSeconds(10),
                     HTTP = $"http://{ip}:{port}/api/Health/Index",
                     Timeout = TimeSpan.FromSeconds(5),
-                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(12)
+                    DeregisterCriticalServiceAfter = TimeSpan.FromSeconds(20)
                 }
             });
         }
